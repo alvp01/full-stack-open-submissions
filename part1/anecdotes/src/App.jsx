@@ -56,6 +56,9 @@ const App = () => {
       </p>
       <button onClick={nextAnecdote}>next anecdote</button>
       <button onClick={handleVote}>vote</button>
+      {
+        anecdotesState.maxVoteIndex !== -1 && <p>anecdote with most votes: {anecdotes[anecdotesState.maxVoteIndex]}</p>
+      }
     </div>
   )
 }
