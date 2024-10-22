@@ -12,17 +12,50 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
-  const [selected, setSelected] = useState(0)
+  const initialState = {
+    selected: 0,
+    votes: Array(anecdotes.length).fill(0),
+    maxVoteIndex: -1
+  }
+
+  const [anecdotesState, setAnecdotesState] = useState(initialState)
+
 
   const nextAnecdote = () => {
-    setSelected(Math.floor(Math.random() * 7))
-    console.log(selected)
+    var randomNumber = Math.floor(Math.random() * 7)
+    while (randomNumber === anecdotesState.selected) {
+      randomNumber = Math.floor(Math.random() * 7)
+    }
+    setAnecdotesState({ ...anecdotesState, selected: randomNumber })
+  }
+
+  const voteAnecdote = () => {
+    setAnecdotesState(prevState => ({ ...prevState, votes: prevState.votes.map((v, i) => i === anecdotesState.selected ? v + 1 : v) }))
+  }
+
+  const updateMaxVoteIndex = () => {
+    setAnecdotesState(prevState => (
+      { ...prevState, maxVoteIndex: prevState.maxVoteIndex < 0 ? prevState.selected : (prevState.votes[prevState.selected] > prevState.votes[prevState.maxVoteIndex] ? prevState.selected : prevState.maxVoteIndex) })
+    )
+  }
+
+  const handleVote = () => {
+    voteAnecdote()
+    updateMaxVoteIndex()
+    console.log(anecdotesState.votes)
+    console.log(anecdotesState.maxVoteIndex)
   }
 
   return (
     <div>
-      {anecdotes[selected]}
+      <p>
+        {anecdotes[anecdotesState.selected]}
+      </p>
+      <p>
+        has {anecdotesState.votes[anecdotesState.selected]} votes
+      </p>
       <button onClick={nextAnecdote}>next anecdote</button>
+      <button onClick={handleVote}>vote</button>
     </div>
   )
 }
